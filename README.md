@@ -19,6 +19,4 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 ### Take A Look
 
 
-
-https://github.com/user-attachments/assets/0d42e1c6-ea29-4c44-ad07-ab75f0d82399
-
+https://github.com/user-attachments/assets/1fc8665d-d57f-40b3-9436-b0e302ee7583
