@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
@@ -18,9 +18,9 @@ export default function ResultScreen({ navigation, route }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Test Results</Text>
-      <Text style={styles.resultText}>Distance Walked: {distance} meters</Text>
+      <Text style={styles.resultText}>Distance Walked: {distance.toFixed(2)} meters</Text>
       <Text style={styles.adviceText}>Great job! Keep walking to improve your health.</Text>
-      <Button title="Go Home" onPress={() => navigation.navigate('Home')} />
+      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
     </View>
   );
 }

@@ -1,47 +1,66 @@
-import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../types';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
+import * as Location from 'expo-location';
 
-type TestScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Test'>;
+export default function TestScreen() {
+  const [timer, setTimer] = useState(0);
+  const [distance, setDistance] = useState(0);
+  const [isTracking, setIsTracking] = useState(false);
+  const [locationSubscription, setLocationSubscription] =
+    useState<Location.LocationSubscription | null>(null);
 
-type Props = {
-  navigation: TestScreenNavigationProp;
-};
+  useEffect(() => {
+    let timerInterval: NodeJS.Timeout | null = null;
 
-export default function TestScreen({ navigation }: Props) {
-  const [timeElapsed, setTimeElapsed] = useState(0);
-  const [distanceWalked, setDistanceWalked] = useState('');
+    if (isTracking) {
+      timerInterval = setInterval(() => setTimer((prev) => prev + 1), 1000);
+    }
 
-  const startTest = () => {
-    // Logic for starting the timer or test would go here.
-    // For now, we'll simulate it with a placeholder message.
-    alert('Test Started! Track your walk distance.');
+    return () => {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+    };
+  }, [isTracking]);
+
+  const startTracking = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Permission to access location was denied');
+      return;
+    }
+
+    setIsTracking(true);
+
+    const subscription = await Location.watchPositionAsync(
+      {
+        accuracy: Location.Accuracy.High,
+        distanceInterval: 1,
+      },
+      (location) => {
+        const speed = location.coords.speed ?? 0; // Use 0 if speed is null
+        setDistance((prevDistance) => prevDistance + speed);
+      }
+    );
+
+    setLocationSubscription(subscription);
   };
 
-  const endTest = () => {
-    // Simulate ending the test
-    setTimeElapsed(360); // Simulating 6 minutes (360 seconds)
+
+  const stopTracking = () => {
+    setIsTracking(false);
+    if (locationSubscription) {
+      locationSubscription.remove(); // Correctly removes the subscription
+      setLocationSubscription(null);
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Walking Test</Text>
-      <Text style={styles.timer}>Time Elapsed: {timeElapsed} seconds</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter Distance Walked (meters)"
-        value={distanceWalked}
-        onChangeText={setDistanceWalked}
-        keyboardType="numeric"
-      />
-      <Button title="Start Test" onPress={startTest} />
-      <Button title="End Test" onPress={endTest} />
-      <Button
-        title="Go to Post-Test"
-        onPress={() => navigation.navigate('PostTest', { distanceWalked })}
-        disabled={!distanceWalked}
-      />
+      <Text style={styles.timer}>Time Elapsed: {timer} seconds</Text>
+      <Text style={styles.distance}>Distance Walked: {distance.toFixed(2)} meters</Text>
+      <Button title={isTracking ? 'Stop Test' : 'Start Test'} onPress={isTracking ? stopTracking : startTracking} />
     </View>
   );
 }
@@ -65,13 +84,9 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 20,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    width: '80%',
+  distance: {
+    fontSize: 18,
+    color: '#333',
     marginBottom: 20,
-    borderRadius: 5,
-    backgroundColor: '#fff',
   },
 });

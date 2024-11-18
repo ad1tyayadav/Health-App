@@ -1,19 +1,37 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../types'; 
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, StyleSheet, Alert } from 'react-native';
+import * as Sharing from 'expo-sharing';  // Ensure you have imported expo-sharing
 
-type ShareScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Share'>;
+export default function ShareScreen() {
+  const [isSharingAvailable, setIsSharingAvailable] = useState(false);
 
-type Props = {
-  navigation: ShareScreenNavigationProp;
-};
+  // Use useEffect to check if sharing is available when the component is mounted
+  useEffect(() => {
+    const checkSharingAvailability = async () => {
+      const available = await Sharing.isAvailableAsync();
+      setIsSharingAvailable(available);
+    };
 
-export default function ShareScreen({ navigation }: Props) {
+    checkSharingAvailability();
+  }, []);
+
+  const handleShare = async () => {
+    try {
+      if (isSharingAvailable) {
+        // Add sharing functionality here, for example:
+        await Sharing.shareAsync('https://example.com');  // Share a link
+      } else {
+        Alert.alert('Sharing not available', 'Sharing is not available on this device.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'An error occurred while sharing.');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Share Your Results</Text>
-      <Button title="Back to Home" onPress={() => navigation.navigate('Home')} />
+      <Button title="Share" onPress={handleShare} />
     </View>
   );
 }

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 
@@ -13,6 +13,43 @@ export default function RegistrationScreen({ navigation }: Props) {
   const [name, setName] = useState<string>('');
   const [age, setAge] = useState<string>('');
   const [email, setEmail] = useState<string>('');
+
+  const ageInputRef = useRef<TextInput>(null);
+  const emailInputRef = useRef<TextInput>(null);
+
+  // Function to validate the form inputs
+  const validateForm = () => {
+    if (!name || !age || !email) {
+      Alert.alert('Error', 'Please fill in all fields.');
+      return false;
+    }
+
+    if (isNaN(Number(age)) || Number(age) <= 0) {
+      Alert.alert('Error', 'Please enter a valid age.');
+      ageInputRef.current?.focus();
+      return false;
+    }
+
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!email.match(emailPattern)) {
+      Alert.alert('Error', 'Please enter a valid email address.');
+      emailInputRef.current?.focus();
+      return false;
+    }
+
+    return true;
+  };
+
+  // Handle form submission and navigation
+  const handleSubmit = () => {
+    if (validateForm()) {
+      // Clear input fields after successful validation
+      setName('');
+      setAge('');
+      setEmail('');
+      navigation.navigate('PreTest');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -30,6 +67,7 @@ export default function RegistrationScreen({ navigation }: Props) {
         value={age}
         onChangeText={setAge}
         keyboardType="numeric"
+        ref={ageInputRef}
       />
       <TextInput
         style={styles.input}
@@ -37,9 +75,10 @@ export default function RegistrationScreen({ navigation }: Props) {
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
+        ref={emailInputRef}
       />
 
-      <Button title="Go to Pre-Test" onPress={() => navigation.navigate('PreTest')} />
+      <Button title="Go to Pre-Test" onPress={handleSubmit} />
     </View>
   );
 }

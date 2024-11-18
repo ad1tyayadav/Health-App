@@ -1,0 +1,74 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+  }
+  
+  /* Header */
+  .header {
+    background-color: #007bff;
+    padding: 20px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    text-align: center;
+  }
+  
+  .header h1 {
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  /* Button */
+  .button {
+    background-color: #007bff;
+    color: white;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  .button:hover {
+    background-color: #0056b3;
+  }
+  
+  .button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* Input */
+  .input-field {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    margin: 10px 0;
+  }
+  
+  /* Screen Container */
+  .screen-container {
+    padding: 20px;
+  }
+  
+  /* Flex Layout */
+  .flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  /* Centered Text */
+  .center-text {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
