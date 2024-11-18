@@ -13,7 +13,7 @@ export default function HomeScreen({ navigation }: Props) {
   return (
     <View style={styles.screenContainer}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Welcome to Health App</Text>
+        <Text style={styles.headerText}>Welcome to Walk Tracker App</Text>
       </View>
 
       {/* Centered Image */}
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: '#fff',
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
   },
 

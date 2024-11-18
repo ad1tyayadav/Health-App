@@ -1,26 +1,33 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../types';
 
-type ResultScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Result'>;
+type RootStackParamList = {
+  Result: { distance: number; timeElapsed: number };
+  Share: { distance: number; timeElapsed: number }; // Pass data to ShareScreen
+};
+
 type ResultScreenRouteProp = RouteProp<RootStackParamList, 'Result'>;
 
 type Props = {
-  navigation: ResultScreenNavigationProp;
   route: ResultScreenRouteProp;
+  navigation: any;
 };
 
-export default function ResultScreen({ navigation, route }: Props) {
-  const { distance } = route.params;
+export default function ResultScreen({ route, navigation }: Props) {
+  const { distance, timeElapsed } = route.params;
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Test Results</Text>
       <Text style={styles.resultText}>Distance Walked: {distance.toFixed(2)} meters</Text>
-      <Text style={styles.adviceText}>Great job! Keep walking to improve your health.</Text>
-      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
+      <Text style={styles.resultText}>Time Taken: {timeElapsed} seconds</Text>
+
+      {/* Navigate to Share Screen */}
+      <Button
+        title="Share Results"
+        onPress={() => navigation.navigate('Share', { distance, timeElapsed })}
+      />
     </View>
   );
 }
@@ -30,22 +37,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#E0F7FA',
+    backgroundColor: '#f8f9fa',
   },
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#000',
     marginBottom: 20,
   },
   resultText: {
-    fontSize: 20,
-    marginBottom: 20,
-  },
-  adviceText: {
     fontSize: 18,
-    color: '#333',
-    textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
   },
 });

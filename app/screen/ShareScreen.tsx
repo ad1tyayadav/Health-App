@@ -1,37 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, Alert } from 'react-native';
-import * as Sharing from 'expo-sharing';  // Ensure you have imported expo-sharing
+import React from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
+import { RouteProp } from '@react-navigation/native';
 
-export default function ShareScreen() {
-  const [isSharingAvailable, setIsSharingAvailable] = useState(false);
+type RootStackParamList = {
+  Share: { distance: number; timeElapsed: number };
+  Home: undefined;
+};
 
-  // Use useEffect to check if sharing is available when the component is mounted
-  useEffect(() => {
-    const checkSharingAvailability = async () => {
-      const available = await Sharing.isAvailableAsync();
-      setIsSharingAvailable(available);
-    };
+type ShareScreenRouteProp = RouteProp<RootStackParamList, 'Share'>;
 
-    checkSharingAvailability();
-  }, []);
+type Props = {
+  route: ShareScreenRouteProp;
+  navigation: any;
+};
 
-  const handleShare = async () => {
-    try {
-      if (isSharingAvailable) {
-        // Add sharing functionality here, for example:
-        await Sharing.shareAsync('https://example.com');  // Share a link
-      } else {
-        Alert.alert('Sharing not available', 'Sharing is not available on this device.');
-      }
-    } catch (error) {
-      Alert.alert('Error', 'An error occurred while sharing.');
-    }
+export default function ShareScreen({ route, navigation }: Props) {
+  const { distance, timeElapsed } = route.params;
+
+  // Share logic (You can implement platform-specific sharing functionality)
+  const shareResults = () => {
+    alert(`Sharing: Distance - ${distance}m, Time - ${timeElapsed}s`);
+    // Add actual share logic here (e.g., using `Share` from `react-native`)
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Share Your Results</Text>
-      <Button title="Share" onPress={handleShare} />
+      <Text style={styles.resultText}>Distance Walked: {distance.toFixed(2)} meters</Text>
+      <Text style={styles.resultText}>Time Taken: {timeElapsed} seconds</Text>
+
+      <Button title="Share Results" onPress={shareResults} />
+      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
     </View>
   );
 }
@@ -41,11 +40,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#BFDBFE',
+    backgroundColor: '#f8f9fa',
   },
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#000',
+    marginBottom: 20,
+  },
+  resultText: {
+    fontSize: 18,
+    marginBottom: 10,
   },
 });
