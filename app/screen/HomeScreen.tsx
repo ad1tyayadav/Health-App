@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 
@@ -9,86 +9,89 @@ type Props = {
   navigation: HomeScreenNavigationProp;
 };
 
+const instructions = [
+  "The test should be performed indoors/outdoors, along a long, flat, straight surface",
+  "Wear comfortable clothing",
+  "Wear comfortable walking shoes",
+  "Use your usual walking aids during the test (cane, walker, etc.)",
+  "Do not exercise vigorously or eat a meal within 2 hours before the test",
+  "Mark your level of exertion on the modified Borg Scale before starting",
+  "Walk as far as possible for 6 minutes. You may slow down, stop, and rest if needed",
+  "You may lean against the wall while resting, but resume walking when able",
+  "After completing the walk, record your post-test Borg score"
+];
+
 export default function HomeScreen({ navigation }: Props) {
   return (
     <View style={styles.screenContainer}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Welcome to Walk Tracker App</Text>
+        <Text style={styles.headerText}>Test Instructions</Text>
       </View>
+      
+      <ScrollView style={styles.scrollContainer}>
+        {instructions.map((instruction, index) => (
+          <View key={index} style={styles.instructionItem}>
+            <Text style={styles.bulletPoint}>•</Text>
+            <Text style={styles.instructionText}>{instruction}</Text>
+          </View>
+        ))}
+      </ScrollView>
 
-      {/* Centered Image */}
-      <View style={styles.imageContainer}>
-        <Image
-          source={{
-            uri: 'https://images.pexels.com/photos/5407206/pexels-photo-5407206.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-          }}
-          style={styles.image}
-        />
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Registration')}
+        >
+          <Text style={styles.buttonText}>I Understand</Text>
+        </TouchableOpacity>
       </View>
-
-      <Text style={styles.centerText}>
-        This app helps you track your walking distance and monitor your health.
-      </Text>
-
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Registration')}>
-        <Text style={styles.buttonText}>Start Test</Text>
-      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  // Screen Container
   screenContainer: {
     flex: 1,
-    backgroundColor: '#f8f9fa', // Light background color
-    padding: 20,
-    alignItems: 'center', // Center content horizontally
+    backgroundColor: '#f8f9fa',
   },
-
-  // Header Styles
   header: {
     backgroundColor: '#007bff',
     paddingVertical: 20,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
     alignItems: 'center',
-    width: '100%', // Ensure the header takes full width
-    marginBottom: 20,
   },
   headerText: {
     color: '#fff',
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
   },
-
-  // Image Container to Center Image
-  imageContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 30,
+  scrollContainer: {
+    flex: 1,
+    padding: 20,
   },
-
-  // Image Styling
-  image: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
+  instructionItem: {
+    flexDirection: 'row',
+    marginBottom: 15,
+    paddingRight: 10,
   },
-
-  // Centered Text
-  centerText: {
-    textAlign: 'center',
+  bulletPoint: {
+    fontSize: 18,
+    marginRight: 10,
+    color: '#007bff',
+  },
+  instructionText: {
+    flex: 1,
     fontSize: 16,
+    lineHeight: 24,
     color: '#333',
-    marginBottom: 30,
   },
-
-  // Button Styling
+  buttonContainer: {
+    padding: 20,
+  },
   button: {
     backgroundColor: '#007bff',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
+    paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
   },
@@ -97,6 +100,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
   },
-
-  // Button Hover and Disabled Styling are not applicable in React Native
 });

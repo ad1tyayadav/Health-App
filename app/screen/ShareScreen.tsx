@@ -1,17 +1,23 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
+// Define RootStackParamList type for navigation
 type RootStackParamList = {
   Share: { distance: number; timeElapsed: number };
   Home: undefined;
 };
 
+// Define the RouteProp for 'Share' screen
 type ShareScreenRouteProp = RouteProp<RootStackParamList, 'Share'>;
+
+// Define the navigation prop type
+type ShareScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Share'>;
 
 type Props = {
   route: ShareScreenRouteProp;
-  navigation: any;
+  navigation: ShareScreenNavigationProp;  // Type the navigation prop here
 };
 
 export default function ShareScreen({ route, navigation }: Props) {

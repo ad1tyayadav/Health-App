@@ -1,15 +1,19 @@
 import React from 'react';
+import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screen/HomeScreen';
 import RegistrationScreen from '../screen/RegistrationScreen';
 import PreTestScreen from '../screen/PreTestScreen';
 import TestScreen from '../screen/TestScreen';
-import PostTestScreen from '../screen/PostTestScreen';
+import PostTestScreen from '../screen/PostTestScreen'; // Importing the correctly typed component
 import ResultScreen from '../screen/ResultScreen';
 import ShareScreen from '../screen/ShareScreen';
 
-const Stack = createStackNavigator();
+// Import RootStackParamList
+import { RootStackParamList } from '../types'; 
+
+const Stack = createStackNavigator<RootStackParamList>(); // Typing the Stack Navigator
 
 export default function App() {
   return (

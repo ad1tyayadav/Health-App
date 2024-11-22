@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, Alert, Linking, Platform } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 import * as Location from 'expo-location';
 
-export default function TestScreen({ navigation }: { navigation: any }) {
+export default function TestScreen() {
   const [timer, setTimer] = useState(0);
   const [distance, setDistance] = useState(0);
   const [isTracking, setIsTracking] = useState(false);
-  const [prevLocation, setPrevLocation] = useState<Location.LocationObject | null>(null);
-  const [locationSubscription, setLocationSubscription] = useState<Location.LocationSubscription | null>(null);
+  const [locationSubscription, setLocationSubscription] =
+    useState<Location.LocationSubscription | null>(null);
 
-  // Timer management
   useEffect(() => {
     let timerInterval: NodeJS.Timeout | null = null;
 
@@ -18,60 +17,16 @@ export default function TestScreen({ navigation }: { navigation: any }) {
     }
 
     return () => {
-      if (timerInterval) clearInterval(timerInterval);
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
     };
   }, [isTracking]);
 
-  // Check if location services are enabled
-  const checkLocationServices = async () => {
-    const isEnabled = await Location.hasServicesEnabledAsync();
-    if (!isEnabled) {
-      Alert.alert(
-        'Enable Location Services',
-        'To continue, your device needs to use location services for accurate tracking.',
-        [
-          { text: 'No Thanks', style: 'cancel' },
-          {
-            text: 'Turn On',
-            onPress: () => {
-              if (Platform.OS === 'android') {
-                Linking.openSettings(); // Redirect to device settings on Android
-              } else {
-                Alert.alert('Go to Settings', 'Enable location services in your device settings.');
-              }
-            },
-          },
-        ]
-      );
-      return false;
-    }
-    return true;
-  };
-
-  // Calculate the distance between two locations
-  const calculateDistance = (loc1: Location.LocationObject, loc2: Location.LocationObject): number => {
-    const R = 6371e3; // Radius of Earth in meters
-    const lat1 = (loc1.coords.latitude * Math.PI) / 180;
-    const lat2 = (loc2.coords.latitude * Math.PI) / 180;
-    const deltaLat = lat2 - lat1;
-    const deltaLon = ((loc2.coords.longitude - loc1.coords.longitude) * Math.PI) / 180;
-
-    const a =
-      Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-      Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in meters
-  };
-
-  // Start tracking location
   const startTracking = async () => {
-    const hasServices = await checkLocationServices();
-    if (!hasServices) return;
-
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permission Denied', 'Location permission is required to track your walk.');
+      alert('Permission to access location was denied');
       return;
     }
 
@@ -80,29 +35,24 @@ export default function TestScreen({ navigation }: { navigation: any }) {
     const subscription = await Location.watchPositionAsync(
       {
         accuracy: Location.Accuracy.High,
-        distanceInterval: 1, // Minimum distance (in meters) for updates
+        distanceInterval: 1,
       },
       (location) => {
-        if (prevLocation) {
-          const dist = calculateDistance(prevLocation, location);
-          setDistance((prevDistance) => prevDistance + dist);
-        }
-        setPrevLocation(location); // Update the previous location
+        const speed = location.coords.speed ?? 0; // Use 0 if speed is null
+        setDistance((prevDistance) => prevDistance + speed);
       }
     );
 
     setLocationSubscription(subscription);
   };
 
-  // Stop tracking location
+
   const stopTracking = () => {
     setIsTracking(false);
     if (locationSubscription) {
-      locationSubscription.remove();
+      locationSubscription.remove(); // Correctly removes the subscription
       setLocationSubscription(null);
     }
-
-    navigation.navigate('Result', { distance, timeElapsed: timer });
   };
 
   return (
@@ -110,10 +60,7 @@ export default function TestScreen({ navigation }: { navigation: any }) {
       <Text style={styles.heading}>Walking Test</Text>
       <Text style={styles.timer}>Time Elapsed: {timer} seconds</Text>
       <Text style={styles.distance}>Distance Walked: {distance.toFixed(2)} meters</Text>
-      <Button
-        title={isTracking ? 'Stop Test' : 'Start Test'}
-        onPress={isTracking ? stopTracking : startTracking}
-      />
+      <Button title={isTracking ? 'Stop Test' : 'Start Test'} onPress={isTracking ? stopTracking : startTracking} />
     </View>
   );
 }

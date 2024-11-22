@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack'; // Import correct typing from react-navigation
 
-type Props = {
-  route: { params: { distanceWalked: number } };
-};
+import { RootStackParamList } from '../types'; // Import the RootStackParamList
 
-export default function PostTestScreen({ route }: Props) {
-  const { distanceWalked } = route.params;
+type PostTestScreenProps = StackScreenProps<RootStackParamList, 'PostTest'>; // Typing the props
+
+const PostTestScreen: React.FC<PostTestScreenProps> = ({ route }) => {
+  const { distanceWalked } = route.params; // Correctly accessing the params from route
 
   return (
     <View style={styles.container}>
@@ -15,7 +16,7 @@ export default function PostTestScreen({ route }: Props) {
       <Text style={styles.adviceText}>Great job! Keep walking to improve your health.</Text>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -41,3 +42,5 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
+
+export default PostTestScreen;
