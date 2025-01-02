@@ -27,7 +27,7 @@ export default function TestScreen() {
   const [isTracking, setIsTracking] = useState(false);
   const [locationSubscription, setLocationSubscription] = 
     useState<Location.LocationSubscription | null>(null);
-  
+
   // Use useRef instead of state for lastLocation to prevent closure issues
   const lastLocationRef = useRef<Location.LocationObject | null>(null);
 
@@ -74,10 +74,10 @@ export default function TestScreen() {
               location.coords.latitude,
               location.coords.longitude
             );
-            
+
             // Only update distance if it's a reasonable value (to filter out GPS jumps)
             if (newDistance > 0 && newDistance < 100) { // Max 100m per second as a sanity check
-              setDistance(prevDistance => prevDistance + newDistance);
+              setDistance((prevDistance) => prevDistance + newDistance);
             }
           }
           lastLocationRef.current = location;
